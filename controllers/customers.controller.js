@@ -55,7 +55,7 @@ class customerController {
       const result = await Customer.findById(id);
       if (result === null) {
         throw { name: "NOT_FOUND_SPECIFIC" };
-      }  else {
+      } else {
         res.status(200).json({ message: "Show the specific data customer", data: result });
       }
     } catch (err) {
@@ -69,7 +69,7 @@ class customerController {
     try {
       const result = await Customer.findByIdAndUpdate(id, { topUp }, { new: true });
       if (result) {
-        result.balance = topUp + result.balance;
+        result.balance = Math.floor(topUp + result.balance);
         result.save();
       }
       res.status(200).json({ message: "top up success!", data: result });
@@ -86,12 +86,12 @@ class customerController {
       if (result) {
         result.balance = result.balance - transfer;
         result.save();
-        const {id} = destination = req.params;
-
-      if (result) {
-        result.balance = result.balance + transfer;
-        result.save();
-      }
+        const { id } = (destination = req.params);
+        const res = await Customer.findOneAndUpdate(id, { balance }, { new: true });
+        if (res) {
+          res.balance = res.balance + transfer;
+          res.save();
+        }
       }
       res.status(200).json({ message: "transfer success!", data: result });
     } catch (err) {

@@ -6,7 +6,7 @@ router.post('/register', customerController.register);
 router.post('/login', customerController.login);
 router.get('/customers', customerController.findCustomers);
 router.get('/customers/:id', customerController.findSpecCus);
-router.put('/topup/:id', customerController.addTopUp)
-
+router.put('/topup/:id', customerController.addTopUp);
+router.put('/transfer/:id', customerController.transfer);
 
 module.exports = router
