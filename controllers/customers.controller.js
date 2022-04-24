@@ -14,7 +14,7 @@ class customerController {
         identityNumb: identityNumb,
         password: hashedPwd,
       });
-      res.status(201).json({ message: "Customer Created!", data: result});
+      res.status(201).json({ message: "Customer Created!", data: result });
     } catch (err) {
       next(err);
     }
@@ -42,8 +42,22 @@ class customerController {
 
   static async findCustomers(req, res, next) {
     try {
-      const result = await Customer.find().populate("Transaction");
-      res.status(200).json({ message: "Show the Customers Data", data: result});
+      const result = await Customer.find();
+      res.status(200).json({ message: "Show the Customers Data", data: result });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async findSpecCus(req, res, next) {
+    const { id } = req.params;
+    try {
+      const result = await Customer.findById(id);
+      if (result === null) {
+        throw { name: "NOT_FOUND_SPECIFIC" };
+      }  else {
+        res.status(200).json({ message: "Show the specific data customer", data: result });
+      }
     } catch (err) {
       next(err);
     }
@@ -53,12 +67,33 @@ class customerController {
     const { id } = req.params;
     const { topUp } = req.body;
     try {
-      const result = await Customer.findByIdAndUpdate(id, {topUp}, {new: true});
-      if (result){
+      const result = await Customer.findByIdAndUpdate(id, { topUp }, { new: true });
+      if (result) {
         result.balance = topUp + result.balance;
-        result.save()
+        result.save();
       }
       res.status(200).json({ message: "top up success!", data: result });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async transfer(req, res, next) {
+    const { id1 } = req.params;
+    const { destination, transfer } = req.body;
+    try {
+      const result = await Customer.findOneAndUpdate(id1, { destination, transfer }, { new: true });
+      if (result) {
+        result.balance = result.balance - transfer;
+        result.save();
+        const {id} = destination = req.params;
+
+      if (result) {
+        result.balance = result.balance + transfer;
+        result.save();
+      }
+      }
+      res.status(200).json({ message: "transfer success!", data: result });
     } catch (err) {
       next(err);
     }
