@@ -1,0 +1,5 @@
+RewriteEngine on
+
+Header set Access-Control-Allow-Origin 'http://localhost:4200'
+Header always set Access-Control-Allow-Methods "POST, GET, PUT, DELETE"
+Header always set Access-Control-Allow-Headers "*"
